@@ -6,10 +6,12 @@
 //   BC_CLIENT_ID       App registration client ID
 //   BC_CLIENT_SECRET   App registration client secret
 //   BC_COMPANY_ID      Business Central company GUID
+//   BC_ENVIRONMENT     BC environment name (default: Belam_DK)
 
 const { BC_TENANT_ID, BC_CLIENT_ID, BC_CLIENT_SECRET, BC_COMPANY_ID } = process.env;
+const BC_ENVIRONMENT = process.env.BC_ENVIRONMENT || 'Belam_DK';
 
-const BC_BASE = `https://api.businesscentral.dynamics.com/v2.0/${BC_TENANT_ID}/Production/api/v2.0`;
+const BC_BASE = `https://api.businesscentral.dynamics.com/v2.0/${BC_TENANT_ID}/${BC_ENVIRONMENT}/api/v2.0`;
 const TOKEN_URL = `https://login.microsoftonline.com/${BC_TENANT_ID}/oauth2/v2.0/token`;
 const BC_SCOPE = 'https://api.businesscentral.dynamics.com/.default';
 
