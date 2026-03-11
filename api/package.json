@@ -1,0 +1,6 @@
+{
+  "name": "blm-web-apps-api",
+  "version": "1.0.0",
+  "description": "Azure Functions API for BLM Web Apps",
+  "engines": { "node": ">=18" }
+}
