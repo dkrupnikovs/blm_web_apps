@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Belam — Create Contact</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://alcdn.msauth.net/browser/2.38.3/js/msal-browser.min.js"></script>
+</head>
+<body>
+
+  <!-- AUTH SCREENS -->
+  <div id="screen-loading" class="screen">
+    <div class="center-box">
+      <div class="spinner"></div>
+      <p>Loading...</p>
+    </div>
+  </div>
+
+  <div id="screen-login" class="screen hidden">
+    <div class="center-box card">
+      <img src="logo.png" alt="Belam" class="logo" onerror="this.style.display='none'" />
+      <h1>Belam Contact Portal</h1>
+      <p>Sign in with your Belam Microsoft account to continue.</p>
+      <button id="btn-login" class="btn btn-primary">Sign in with Microsoft</button>
+    </div>
+  </div>
+
+  <div id="screen-denied" class="screen hidden">
+    <div class="center-box card">
+      <h1>Access Denied</h1>
+      <p>You do not have permission to use this portal.<br/>Contact your BC administrator to request access.</p>
+      <button id="btn-logout-denied" class="btn btn-secondary">Sign out</button>
+    </div>
+  </div>
+
+  <!-- MAIN PORTAL -->
+  <div id="screen-portal" class="screen hidden">
+    <header>
+      <span class="header-title">Belam — Create Contact</span>
+      <span id="user-name" class="header-user"></span>
+      <button id="btn-logout" class="btn btn-small">Sign out</button>
+    </header>
+
+    <main>
+      <div class="card form-card">
+
+        <!-- STEP 1: Country selection -->
+        <div class="form-section">
+          <h2>1. Country</h2>
+          <div class="form-row">
+            <label for="sel-country">Country / Region</label>
+            <select id="sel-country">
+              <option value="">— Loading countries... —</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- STEP 2: Lursoft search (Baltic only) -->
+        <div id="section-lursoft" class="form-section hidden">
+          <h2>2. Company Lookup (Lursoft)</h2>
+          <div class="form-row">
+            <label for="inp-search-name">Search by company name</label>
+            <div class="input-row">
+              <input type="text" id="inp-search-name" placeholder="e.g. Belam" />
+              <button id="btn-search" class="btn btn-primary">Search</button>
+            </div>
+          </div>
+
+          <!-- Search results list -->
+          <div id="search-results" class="hidden">
+            <label>Select company</label>
+            <ul id="results-list" class="results-list"></ul>
+          </div>
+        </div>
+
+        <!-- STEP 3: Contact form -->
+        <div id="section-form" class="form-section">
+          <h2 id="form-section-title">2. Contact Details</h2>
+
+          <div class="form-row">
+            <label for="inp-name">Company Name <span class="req">*</span></label>
+            <input type="text" id="inp-name" placeholder="Company name" />
+          </div>
+          <div class="form-row two-col">
+            <div>
+              <label for="inp-regno">Registration No.</label>
+              <input type="text" id="inp-regno" placeholder="Registration number" />
+            </div>
+            <div>
+              <label for="inp-vatno">VAT No.</label>
+              <input type="text" id="inp-vatno" placeholder="VAT number" />
+            </div>
+          </div>
+          <div class="form-row">
+            <label for="inp-address">Address</label>
+            <input type="text" id="inp-address" placeholder="Street and number" />
+          </div>
+          <div class="form-row three-col">
+            <div>
+              <label for="inp-city">City</label>
+              <input type="text" id="inp-city" placeholder="City" />
+            </div>
+            <div>
+              <label for="inp-postcode">Post Code</label>
+              <input type="text" id="inp-postcode" placeholder="Post code" />
+            </div>
+            <div>
+              <label>Country</label>
+              <input type="text" id="inp-country-display" readonly class="readonly" />
+            </div>
+          </div>
+          <div class="form-row two-col">
+            <div>
+              <label for="inp-email">Email</label>
+              <input type="email" id="inp-email" placeholder="email@company.com" />
+            </div>
+            <div>
+              <label for="inp-phone">Phone</label>
+              <input type="tel" id="inp-phone" placeholder="+371 00000000" />
+            </div>
+          </div>
+          <div class="form-row">
+            <label for="inp-bizrel">Business Relation</label>
+            <select id="inp-bizrel">
+              <option value="">— Select —</option>
+              <option value="VENDOR">Vendor</option>
+              <option value="CUSTOMER">Customer</option>
+              <option value="CONTACT">Contact</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- ACTIONS -->
+        <div class="form-actions">
+          <button id="btn-clear" class="btn btn-secondary">Clear</button>
+          <button id="btn-create" class="btn btn-primary">Create Contact</button>
+        </div>
+
+        <!-- STATUS -->
+        <div id="msg-success" class="message success hidden"></div>
+        <div id="msg-error" class="message error hidden"></div>
+
+      </div>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
