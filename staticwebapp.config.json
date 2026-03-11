@@ -1,0 +1,14 @@
+// staticwebapp.config.json
+{
+  "navigationFallback": {
+    "rewrite": "/index.html"
+  },
+  "globalHeaders": {
+    "Cache-Control": "no-store",
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "SAMEORIGIN"
+  },
+  "mimeTypes": {
+    ".json": "application/json"
+  }
+}
