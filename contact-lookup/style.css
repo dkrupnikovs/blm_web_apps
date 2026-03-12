@@ -79,9 +79,46 @@ main { max-width: 640px; margin: 2rem auto; padding: 0 1rem; }
   margin-top: 1rem; padding: 0.85rem 1rem;
   border-radius: 6px; font-size: 0.95rem;
 }
-.message.error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+.message.error   { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+.message.success { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+
+.section-title {
+  font-size: 1rem; font-weight: 600; color: #1e3a5f;
+  margin-bottom: 1rem;
+}
+
+.search-row select {
+  flex: 1; padding: 0.55rem 0.75rem;
+  border: 1px solid #d1d5db; border-radius: 6px;
+  font-size: 0.95rem; background: #fff;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 0.6rem 0.75rem;
+  margin-top: 1.25rem;
+  align-items: center;
+}
+.form-grid label {
+  font-size: 0.9rem; color: #6b7280; font-weight: 500;
+}
+.form-grid input,
+.form-grid select {
+  padding: 0.5rem 0.7rem;
+  border: 1px solid #d1d5db; border-radius: 6px;
+  font-size: 0.93rem;
+}
+.form-grid input:focus,
+.form-grid select:focus {
+  outline: none; border-color: #1e3a5f;
+  box-shadow: 0 0 0 3px rgba(30,58,95,.1);
+}
+.req { color: #dc2626; }
 
 @media (max-width: 600px) {
   main { padding: 0 0.5rem; }
   .result-table th { width: 45%; }
+  .form-grid { grid-template-columns: 1fr; }
+  .form-grid label { margin-top: 0.4rem; }
 }

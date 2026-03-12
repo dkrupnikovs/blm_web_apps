@@ -33,21 +33,18 @@ async function getToken() {
 }
 
 module.exports = async function (context, req) {
-  const number  = (req.query.number  || '').trim();
-  const country = (req.query.country || '').trim();
+  const number = (req.query.number || '').trim();
 
-  if (!number && !country) {
-    context.res = { status: 400, body: { error: 'number or country query parameter is required.' } };
+  if (!number) {
+    context.res = { status: 400, body: { error: 'number query parameter is required.' } };
     return;
   }
 
   try {
     const token = await getToken();
 
-    const filters = [];
-    if (number)  filters.push(`number eq '${number.replace(/'/g, "''")}'`);
-    if (country) filters.push(`countryRegionCode eq '${country.replace(/'/g, "''")}'`);
-    const url = `${BC_BASE}/companies(${BC_COMPANY_ID})/contacts?$filter=${encodeURIComponent(filters.join(' and '))}&$top=1`;
+    const filter = `number eq '${number.replace(/'/g, "''")}'`;
+    const url = `${BC_BASE}/companies(${BC_COMPANY_ID})/contacts?$filter=${encodeURIComponent(filter)}&$top=1`;
     const res = await fetch(url, {
       headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
     });
