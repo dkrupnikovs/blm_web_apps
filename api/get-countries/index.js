@@ -1,12 +1,5 @@
-// Azure Function: GET /api/contact-lookup?number=KP00123
-//
-// Authenticates to BC using client credentials (app-level, no user login).
-// Environment variables required (set in Azure SWA Application Settings):
-//   BC_TENANT_ID       Azure AD tenant ID
-//   BC_CLIENT_ID       App registration client ID
-//   BC_CLIENT_SECRET   App registration client secret
-//   BC_COMPANY_ID      Business Central company GUID
-//   BC_ENVIRONMENT     BC environment name (default: Belam_DK)
+// Azure Function: GET /api/get-countries
+// Returns list of country display names from BC Countries/Regions table.
 
 const { BC_TENANT_ID, BC_CLIENT_ID, BC_CLIENT_SECRET, BC_COMPANY_ID } = process.env;
 const BC_ENVIRONMENT = process.env.BC_ENVIRONMENT || 'Belam_DK';
@@ -33,21 +26,10 @@ async function getToken() {
 }
 
 module.exports = async function (context, req) {
-  const number  = (req.query.number  || '').trim();
-  const country = (req.query.country || '').trim();
-
-  if (!number && !country) {
-    context.res = { status: 400, body: { error: 'number or country query parameter is required.' } };
-    return;
-  }
-
   try {
     const token = await getToken();
 
-    const filters = [];
-    if (number)  filters.push(`number eq '${number.replace(/'/g, "''")}'`);
-    if (country) filters.push(`countryRegionCode eq '${country.replace(/'/g, "''")}'`);
-    const url = `${BC_BASE}/companies(${BC_COMPANY_ID})/contacts?$filter=${encodeURIComponent(filters.join(' and '))}&$top=1`;
+    const url = `${BC_BASE}/companies(${BC_COMPANY_ID})/countriesRegions?$select=code,displayName&$orderby=displayName&$top=300`;
     const res = await fetch(url, {
       headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
     });
@@ -59,15 +41,17 @@ module.exports = async function (context, req) {
     }
 
     const data = await res.json();
-    const contact = (data.value || [])[0] || null;
+    const countries = (data.value || [])
+      .map(c => ({ code: c.code, name: c.displayName }))
+      .filter(c => c.name);
 
     context.res = {
-      status: contact ? 200 : 404,
+      status: 200,
       headers: { 'Content-Type': 'application/json' },
-      body: contact,
+      body: countries,
     };
   } catch (e) {
-    context.log.error('contact-lookup error:', e.message);
+    context.log.error('get-countries error:', e.message);
     context.res = { status: 500, body: { error: 'Internal error. Please try again.' } };
   }
 };

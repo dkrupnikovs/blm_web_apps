@@ -11,6 +11,22 @@ async function loadUser() {
 }
 loadUser();
 
+async function loadCountries() {
+  try {
+    const res = await fetch('/api/get-countries');
+    if (!res.ok) return;
+    const countries = await res.json();
+    const sel = document.getElementById('inp-country');
+    countries.forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.code;
+      opt.textContent = c.name;
+      sel.appendChild(opt);
+    });
+  } catch (e) { /* ignore — dropdown stays empty */ }
+}
+loadCountries();
+
 function val(id) { return document.getElementById(id).value.trim(); }
 function show(id) { document.getElementById(id).classList.remove('hidden'); }
 function hide(id) { document.getElementById(id).classList.add('hidden'); }
@@ -45,7 +61,8 @@ function renderContact(c) {
 
 async function lookup() {
   const number = val('inp-number');
-  if (!number) return;
+  const country = val('inp-country');
+  if (!number && !country) return;
 
   const btn = document.getElementById('btn-lookup');
   btn.disabled = true;
@@ -53,7 +70,9 @@ async function lookup() {
   hide('msg-error');
 
   try {
-    const res = await fetch(`/api/contact-lookup?number=${encodeURIComponent(number)}`);
+    let url = `/api/contact-lookup?number=${encodeURIComponent(number)}`;
+    if (country) url += `&country=${encodeURIComponent(country)}`;
+    const res = await fetch(url);
     const data = await res.json();
     if (!res.ok) { showError(data.error || `Error ${res.status}`); return; }
     if (!data) { showError(`Contact "${number}" not found.`); return; }
