@@ -43,7 +43,7 @@ module.exports = async function (context, req) {
 
     const data = await res.json();
     const countries = (data.value || [])
-      .map(c => ({ code: c.code, name: c.englishName || c.name }))
+      .map(c => ({ code: c.code, name: c.englishName }))
       .filter(c => c.name);
 
     context.res = {
