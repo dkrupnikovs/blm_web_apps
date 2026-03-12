@@ -29,7 +29,7 @@ module.exports = async function (context, req) {
   try {
     const token = await getToken();
 
-    const url = `${BC_BASE}/companies(${BC_COMPANY_ID})/countriesRegions?$select=code,displayName&$orderby=displayName&$top=300`;
+    const url = `${BC_BASE}/companies(${BC_COMPANY_ID})/countriesRegions?$select=code,displayName,englishName&$orderby=englishName&$top=300`;
     const res = await fetch(url, {
       headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
     });
@@ -42,7 +42,7 @@ module.exports = async function (context, req) {
 
     const data = await res.json();
     const countries = (data.value || [])
-      .map(c => ({ code: c.code, name: c.displayName }))
+      .map(c => ({ code: c.code, name: c.englishName || c.displayName }))
       .filter(c => c.name);
 
     context.res = {
