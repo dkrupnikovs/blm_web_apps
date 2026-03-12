@@ -4,7 +4,8 @@
 const { BC_TENANT_ID, BC_CLIENT_ID, BC_CLIENT_SECRET, BC_COMPANY_ID } = process.env;
 const BC_ENVIRONMENT = process.env.BC_ENVIRONMENT || 'Belam_DK';
 
-const BC_BASE = `https://api.businesscentral.dynamics.com/v2.0/${BC_TENANT_ID}/${BC_ENVIRONMENT}/api/v2.0`;
+const BC_BASE        = `https://api.businesscentral.dynamics.com/v2.0/${BC_TENANT_ID}/${BC_ENVIRONMENT}/api/v2.0`;
+const BC_CUSTOM_BASE = `https://api.businesscentral.dynamics.com/v2.0/${BC_TENANT_ID}/${BC_ENVIRONMENT}/api/belam/registers/v1.0`;
 const TOKEN_URL = `https://login.microsoftonline.com/${BC_TENANT_ID}/oauth2/v2.0/token`;
 const BC_SCOPE = 'https://api.businesscentral.dynamics.com/.default';
 
@@ -29,7 +30,7 @@ module.exports = async function (context, req) {
   try {
     const token = await getToken();
 
-    const url = `${BC_BASE}/companies(${BC_COMPANY_ID})/countriesRegions?$select=code,displayName,englishName&$orderby=englishName&$top=300`;
+    const url = `${BC_CUSTOM_BASE}/companies(${BC_COMPANY_ID})/countryRegions?$select=code,name,englishName&$orderby=englishName&$top=300`;
     const res = await fetch(url, {
       headers: { Authorization: `Bearer ${token}`, Accept: 'application/json' },
     });
@@ -42,7 +43,7 @@ module.exports = async function (context, req) {
 
     const data = await res.json();
     const countries = (data.value || [])
-      .map(c => ({ code: c.code, name: c.englishName || c.displayName }))
+      .map(c => ({ code: c.code, name: c.englishName || c.name }))
       .filter(c => c.name);
 
     context.res = {
