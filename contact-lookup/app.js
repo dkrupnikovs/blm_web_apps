@@ -1,5 +1,15 @@
-// Frontend — no auth logic here.
-// All BC calls go through /api/contact-lookup (Azure Function).
+// Auth handled by SWA — unauthenticated users are redirected to AAD login.
+// User info available from /.auth/me after login.
+
+async function loadUser() {
+  try {
+    const res = await fetch('/.auth/me');
+    const data = await res.json();
+    const user = data.clientPrincipal;
+    if (user) document.getElementById('user-name').textContent = user.userDetails;
+  } catch (e) { /* ignore */ }
+}
+loadUser();
 
 function val(id) { return document.getElementById(id).value.trim(); }
 function show(id) { document.getElementById(id).classList.remove('hidden'); }
